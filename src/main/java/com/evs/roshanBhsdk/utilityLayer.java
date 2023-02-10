@@ -26,6 +26,7 @@ public class utilityLayer {
 			if (browsername.equalsIgnoreCase("chrome")) {
 				WebDriverManager.chromedriver().setup();
 				driver = new ChromeDriver();
+				Thread.sleep(8000);
 			} else if (browsername.equalsIgnoreCase("firefox")) {
 				WebDriverManager.firefoxdriver().setup();
 				driver = new FirefoxDriver();
