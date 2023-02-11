@@ -27,10 +27,13 @@ public class utilityLayer {
 				WebDriverManager.chromedriver().setup();
 				driver = new ChromeDriver();
 				Thread.sleep(8000);
+				System.out.println("dddd");
 			} else if (browsername.equalsIgnoreCase("firefox")) {
 				WebDriverManager.firefoxdriver().setup();
 				driver = new FirefoxDriver();
 			} else if (browsername.equalsIgnoreCase("edge")) {
+				System.out.println("i am hero");
+				System.out.println("i am lovable");
 				WebDriverManager.edgedriver().setup();
 				driver = new EdgeDriver();
 			}
