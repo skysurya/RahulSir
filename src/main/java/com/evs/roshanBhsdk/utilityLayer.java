@@ -32,6 +32,12 @@ public class utilityLayer {
 			} else if (browsername.equalsIgnoreCase("edge")) {
 				WebDriverManager.edgedriver().setup();
 				driver = new EdgeDriver();
+				System.out.println();
+				System.out.println()
+				;
+				System.out.println();
+				
+				
 			}
 			logger.log(Status.INFO, browsername + " browser is launched successfully");
 		} catch (Exception e) {
