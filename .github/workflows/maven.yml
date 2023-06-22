@@ -1,0 +1,108 @@
+
+Conversation opened. 1 unread message.
+
+Skip to content
+Using Gmail with screen readers
+1 of 545
+GitHub Actions WorkFlows
+Inbox
+
+roshan yadav <roshan.bhadohi0@gmail.com>
+Attachments
+13:07 (0 minutes ago)
+to me
+
+
+# This workflow executes the Soap Hub Eval Regression Test Suite
+#
+# Name of the workflow
+name: SoapHubRegressionTestExecution
+
+# Workflow will trigger on schedule at ## PM Everyday
+on:
+  push:
+    branches:
+      - master  # Trigger the workflow on code push to the 'main' branch
+
+# Workflow will take inputs for Test Suite and Test Class
+  workflow_dispatch:
+   inputs:
+    TestSuite:
+      description: 'Provide the test suite to execute'
+      required: true
+      default: 'regression'
+    TestClass:
+      description: 'Provide the specific test class to execute'
+      required: false
+
+# The environment variables for scheduled test execution, GH Package access, and Slack notification
+env:
+  REPO: ${{ github.repository }}
+  BRANCH: master
+  TEST_SUITE: regression
+  GPR_USERNAME: ${{ secrets.GITHUBPKGS_SERVICE_ACCT_USERNAME }}
+  GPR_TOKEN: ${{ secrets.GITHUBPKGS_SERVICE_ACCT_TOKEN }}
+
+# List of jobs to be executed in the workflow
+jobs:
+  build:
+    # Specifies the runner environment as the latest version of Ubuntu
+    runs-on: ubuntu-latest
+
+    # Defines the list of steps to be executed in the job
+    steps:
+      # A step to checkout the repository's code
+      # Uses the "checkout" action provided by GitHub Actions
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Sets up JDK 15 for the job
+      # Uses the "setup-java" action provided by GitHub Actions
+      # Specifies the JDK version 15 and distribution of JDK as AdoptOpenJDK
+      - name: Set up JDK 18
+        uses: actions/setup-java@v3
+        with:
+          java-version: '18'
+          distribution: 'adopt'
+         
+     # This step will run only if the 'TestClass' input is empty
+      # Uses the Maven command to build and test the project
+      - name: Build and test Maven project Test Suite
+        if: github.event.inputs.TestClass == ''
+        run: mvn clean test
+
+      # This step will run if the 'TestClass' input is NOT empty
+      # Uses the Maven command to build and test the specific test class
+      - name: Build and test Maven project Test Class
+        if: github.event.inputs.TestClass != ''
+        run: mvn clean test -Dtest=${{ github.event.inputs.TestClass }}
+     
+
+#       # This step will run only if the 'TestClass' input is empty
+#       # Uses the Maven command to build and test the project
+#       - name: Build and test Maven project Test Suite
+#         if: ${{ github.event.inputs.TestClass == '' }}
+#         run: mvn clean test -Dsurefire.suiteXmlFiles="$1"
+
+#       # This step will run if the 'TestClass' input is NOT empty
+#       # Uses the Maven command to build and test the specific test class
+#       - name: Build and test Maven project Test Class
+#         if: ${{ github.event.inputs.TestClass != '' }}
+#         run: mvn clean test -Dtest=${{ github.event.inputs.TestClass }}
+
+      # Runs this step regardless of the conditions
+      - name: Archive Test Results
+        run: |
+          ls target
+          ls target/surefire-reports
+          ls test-output/SparkReport
+          pwd
+
+      - name: Publish Emailable Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: TestNG-Report
+          path: target/surefire-reports/emailable-report.html
+       
+
+ 
